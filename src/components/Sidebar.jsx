@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react"; 
 import { NavLink } from "react-router-dom";
 import { Squares2X2Icon, ComputerDesktopIcon } from "@heroicons/react/24/outline";
@@ -11,16 +10,21 @@ const Sidebar = () => {
   const { open, setOpen } = useSidebar();
   const { user } = useAuth();
 
-  const [avatar, setAvatar] = useState(user?.imageprofil ? `https://django-gestion-hotel.onrender.com/media/${user.imageprofil}` : "/default-profil.jpg");
+  // Fonction pour obtenir l'URL de l'avatar
+  const getAvatarUrl = () => {
+    if (user?.imageprofil_url) return user.imageprofil_url;
+    if (user?.imageprofil && typeof user.imageprofil === 'string') {
+      // Si imageprofil contient déjà l'URL complète Cloudinary
+      if (user.imageprofil.startsWith('http')) return user.imageprofil;
+    }
+    return "/default-profil.jpg";
+  };
 
-useEffect(() => {
-  if (user?.imageprofil) {
-    setAvatar(`https://django-gestion-hotel.onrender.com${user.imageprofil}`); // chemin relatif local
-  } else {
-    setAvatar("/default-profil.jpg");
-  }
-}, [user]);
+  const [avatar, setAvatar] = useState(getAvatarUrl());
 
+  useEffect(() => {
+    setAvatar(getAvatarUrl());
+  }, [user]);
 
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-2 rounded-md transition
@@ -93,7 +97,8 @@ useEffect(() => {
               <img
                 src={avatar}
                 alt="user"
-                className="w-9 h-9 rounded-full cursor-pointer"
+                className="w-9 h-9 rounded-full cursor-pointer object-cover"
+                onError={(e) => e.target.src = "/default-profil.jpg"}
               />
 
               <div>
@@ -111,4 +116,3 @@ useEffect(() => {
 };
 
 export default Sidebar;
-
