@@ -41,7 +41,7 @@ API.interceptors.response.use(
       try {
         const refresh = localStorage.getItem("refresh_token");
         const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/accounts/token/refresh/`,
+          `${import.meta.env.VITE_API_URL}/api/accounts/token/refresh/`,
           { refresh } // clé attendue par DRF SimpleJWT
         );
 
@@ -65,34 +65,34 @@ API.interceptors.response.use(
 // ==============================
 // AUTH
 // ==============================
-export const register = (data) => API.post("/accounts/register/", data);
-export const login = (data) => API.post("/accounts/login/", data);
-export const getProfile = () => API.get("/accounts/profile/");
-export const forgotPassword = (data) => API.post("/accounts/password-reset/", data);
-export const resetPassword = (data) => API.post("/accounts/password-reset-confirm/", data);
+export const register = (data) => API.post("/api/accounts/register/", data);
+export const login = (data) => API.post("/api/accounts/login/", data);
+export const getProfile = () => API.get("/api/accounts/profile/");
+export const forgotPassword = (data) => API.post("/api/accounts/password-reset/", data);
+export const resetPassword = (data) => API.post("/api/accounts/password-reset-confirm/", data);
 
 // LOGOUT
 export const logout = () => {
   const refresh = localStorage.getItem("refresh_token");
-  return API.post("/accounts/logout/", { refresh }); // DRF SimpleJWT attend { refresh: "..." }
+  return API.post("/api/accounts/logout/", { refresh }); // DRF SimpleJWT attend { refresh: "..." }
 };
 
 // ==============================
 // PROFILE
 // ==============================
 export const updateProfileImage = (formData) =>
-  API.put("/accounts/profile/image/", formData, {
+  API.put("/api/accounts/profile/image/", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
 // ==============================
 // HOTELS
 // ==============================
-export const getHotels = () => API.get("/hotels/");
+export const getHotels = () => API.get("/api/hotels/");
 export const createHotel = (formData) =>
-  API.post("/hotels/create/", formData, { headers: { "Content-Type": "multipart/form-data" } });
+  API.post("/api/hotels/create/", formData, { headers: { "Content-Type": "multipart/form-data" } });
 export const updateHotel = (id, formData) =>
-  API.put(`/hotels/${id}/update/`, formData, { headers: { "Content-Type": "multipart/form-data" } });
-export const deleteHotel = (id) => API.delete(`/hotels/${id}/delete/`);
+  API.put(`/api/hotels/${id}/update/`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+export const deleteHotel = (id) => API.delete(`/api/hotels/${id}/delete/`);
 
 export default API;
