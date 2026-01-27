@@ -220,7 +220,6 @@
 
 // export default AjoutHotelModal;
 
-
 import React, { useState } from "react";
 import { ArrowLeftIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { createHotel, updateHotel } from "../api/api";
@@ -237,13 +236,13 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
 
   const [errors, setErrors] = useState({});
   const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(hotel?.image_url || null); // <-- Cloudinary URL complète
+  const [preview, setPreview] = useState(hotel?.image_url || null); // URL Cloudinary
 
-  // Validation
+  // Validation simple
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = "Nom obligatoire";
-    if (!form.description.trim()) e.description = "description obligatoire";
+    if (!form.description.trim()) e.description = "Description obligatoire";
     if (!form.email) {
       e.email = "Email obligatoire";
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
@@ -256,39 +255,47 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
     return Object.keys(e).length === 0;
   };
 
-  // Changer image
+  // Changer l'image
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setImageFile(file);
-    setPreview(URL.createObjectURL(file)); // preview temporaire local
+    setPreview(URL.createObjectURL(file));
   };
 
-  // Submit
+  // Soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     try {
+      // Création FormData obligatoire pour le backend
       const formDataToSend = new FormData();
-      for (const key in form) formDataToSend.append(key, form[key]);
+      Object.entries(form).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
       if (imageFile) formDataToSend.append("image", imageFile);
 
       let res;
       if (hotel) {
-        res = await updateHotel(hotel.id, formDataToSend);
+        res = await updateHotel(hotel.id, formDataToSend); // PUT/PATCH backend
       } else {
-        res = await createHotel(formDataToSend);
+        res = await createHotel(formDataToSend); // POST backend
       }
 
-      // Utiliser l'URL complète renvoyée par le backend (Cloudinary)
+      // Mettre à jour la preview avec l'image renvoyée par Cloudinary
       if (res.data.image_url) setPreview(res.data.image_url);
 
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(); // callback parent pour rafraîchir la liste
       onClose();
     } catch (error) {
       console.error("Erreur hôtel:", error.response?.data || error.message);
+      // Optionnel : afficher l'erreur côté UI
+      alert(
+        error.response?.data?.image ||
+          error.response?.data?.non_field_errors ||
+          "Une erreur est survenue"
+      );
     }
   };
 
@@ -304,7 +311,7 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
               <ArrowLeftIcon className="w-5 h-5 text-gray-600" />
             </button>
             <h2 className="text-sm font-semibold text-gray-700 uppercase">
-              {hotel ? "Modifier l'hôtel" : "Créer un nouveau hôtel"}
+              {hotel ? "Modifier l'hôtel" : "Créer un nouvel hôtel"}
             </h2>
           </div>
           <button onClick={onClose}>
@@ -312,15 +319,16 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
           </button>
         </div>
 
-        {/* Form */}
+        {/* Formulaire */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Nom */}
             <div>
               <label className="text-sm text-gray-600">Nom de l’hôtel</label>
               <input
                 type="text"
                 className={`w-full mt-1 px-3 py-2 border rounded-md ${
-                  errors.name && "border-red-500"
+                  errors.name ? "border-red-500" : ""
                 }`}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -328,25 +336,29 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
               {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
             </div>
 
+            {/* Description / Adresse */}
             <div>
-              <label className="text-sm text-gray-600">adresse</label>
+              <label className="text-sm text-gray-600">Adresse</label>
               <input
                 type="text"
                 className={`w-full mt-1 px-3 py-2 border rounded-md ${
-                  errors.description && "border-red-500"
+                  errors.description ? "border-red-500" : ""
                 }`}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
-              {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-xs text-red-500">{errors.description}</p>
+              )}
             </div>
 
+            {/* Email */}
             <div>
               <label className="text-sm text-gray-600">E-mail</label>
               <input
                 type="email"
                 className={`w-full mt-1 px-3 py-2 border rounded-md ${
-                  errors.email && "border-red-500"
+                  errors.email ? "border-red-500" : ""
                 }`}
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -354,25 +366,29 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
               {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
             </div>
 
+            {/* Téléphone */}
             <div>
               <label className="text-sm text-gray-600">Numéro de téléphone</label>
               <input
                 type="text"
                 className={`w-full mt-1 px-3 py-2 border rounded-md ${
-                  errors.telephone && "border-red-500"
+                  errors.telephone ? "border-red-500" : ""
                 }`}
                 value={form.telephone}
                 onChange={(e) => setForm({ ...form, telephone: e.target.value })}
               />
-              {errors.telephone && <p className="text-xs text-red-500">{errors.telephone}</p>}
+              {errors.telephone && (
+                <p className="text-xs text-red-500">{errors.telephone}</p>
+              )}
             </div>
 
+            {/* Prix */}
             <div>
               <label className="text-sm text-gray-600">Prix par nuit</label>
               <input
                 type="text"
                 className={`w-full mt-1 px-3 py-2 border rounded-md ${
-                  errors.prix && "border-red-500"
+                  errors.prix ? "border-red-500" : ""
                 }`}
                 value={form.prix}
                 onChange={(e) => setForm({ ...form, prix: e.target.value })}
@@ -380,6 +396,7 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
               {errors.prix && <p className="text-xs text-red-500">{errors.prix}</p>}
             </div>
 
+            {/* Devise */}
             <div>
               <label className="text-sm text-gray-600">Devise</label>
               <select
@@ -402,7 +419,11 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
               onClick={() => document.getElementById("hotelImage").click()}
             >
               {preview ? (
-                <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-md" />
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-full object-cover rounded-md"
+                />
               ) : (
                 <>
                   <PhotoIcon className="w-8 h-8" />
@@ -435,4 +456,3 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
 };
 
 export default AjoutHotelModal;
-
