@@ -88,16 +88,7 @@ export const updateProfileImage = (formData) =>
 // ==============================
 // HOTELS
 // ==============================
-export const getHotels = async () => {
-  try {
-    const response = await API.get("/api/hotels/");
-    return response.data;
-  } catch (error) {
-    console.error("Erreur récupération hôtels :", error.response?.data || error.message);
-    throw error;
-  }
-};
-
+export const getHotels = () => API.get("/api/hotels/");
 export const createHotel = (formData) =>
   API.post("/api/hotels/create/", formData, { headers: { "Content-Type": "multipart/form-data" } });
 export const updateHotel = (id, formData) =>
