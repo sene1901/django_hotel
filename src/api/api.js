@@ -90,7 +90,8 @@ export const updateProfileImage = (formData) =>
 // ==============================
 export const getHotels = () => API.get("/api/hotels/");
 export const createHotel = (formData) =>
-  API.post("/api/hotels/create/", formData, { headers: { "Content-Type": "multipart/form-data" } });
+  API.post("/api/hotels/create/", formData);
+
 export const updateHotel = (id, formData) =>
   API.put(`/api/hotels/${id}/update/`, formData, { headers: { "Content-Type": "multipart/form-data" } });
 export const deleteHotel = (id) => API.delete(`/api/hotels/${id}/delete/`);
