@@ -14,8 +14,8 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
   });
 
   const [errors, setErrors] = useState({});
-  const [backendError, setBackendError] = useState(null);  // ⚠️ AJOUTÉ
-  const [isLoading, setIsLoading] = useState(false);  // ⚠️ AJOUTÉ
+  const [backendError, setBackendError] = useState(null);  
+  const [isLoading, setIsLoading] = useState(false);  
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(hotel?.image || null);
 
@@ -24,7 +24,7 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
     const e = {};
 
     if (!form.name.trim()) e.name = "Nom obligatoire";
-    if (!form.description.trim()) e.description = "Description obligatoire";  // ⚠️ Changé
+    if (!form.description.trim()) e.description = "Description obligatoire";  
     if (!form.email) {
       e.email = "Email obligatoire";
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
@@ -102,7 +102,7 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
           </button>
         </div>
 
-        {/* ⚠️ AJOUTÉ - Affichage erreur backend */}
+        {/*  AJOUTÉ - Affichage erreur backend */}
         {backendError && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
             <p className="text-sm text-red-600 font-semibold mb-2">Erreur du serveur :</p>
@@ -129,7 +129,7 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
 
             {/* Description */}
             <div>
-              <label className="text-sm text-gray-600">Description</label>  {/* ⚠️ Changé */}
+              <label className="text-sm text-gray-600">Description</label>
               <input
                 type="text"
                 className={`w-full mt-1 px-3 py-2 border rounded-md ${
@@ -229,7 +229,7 @@ const AjoutHotelModal = ({ onClose, hotel = null, onSuccess }) => {
               type="button" 
               onClick={onClose} 
               className="px-4 py-2 border rounded-md hover:bg-gray-50"
-              disabled={isLoading}  // ⚠️ AJOUTÉ
+              disabled={isLoading}  
             >
               Fermer
             </button>
