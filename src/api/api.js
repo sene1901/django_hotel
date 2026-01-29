@@ -166,10 +166,7 @@ API.interceptors.response.use(
 // AUTHENTIFICATION (Djoser uniquement)
 // ==============================
 
-/**
- * Inscription - Djoser
- * @param {Object} data - { email, username, password }
- */
+
 export const register = (data) => API.post("/api/auth/users/", {
   email: data.email,
   username: data.username,
