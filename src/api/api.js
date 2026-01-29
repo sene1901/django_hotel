@@ -104,9 +104,10 @@ import axios from "axios";
 // AXIOS INSTANCE
 // ==============================
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, 
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     Accept: "application/json",
+    "Content-Type": "application/json",
   },
 });
 
@@ -141,7 +142,7 @@ API.interceptors.response.use(
       try {
         const refresh = localStorage.getItem("refresh_token");
         const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/auth/jwt/refresh/`,
+          `${import.meta.env.VITE_API_URL}/api/token/refresh/`,
           { refresh }
         );
 
@@ -163,66 +164,47 @@ API.interceptors.response.use(
 );
 
 // ==============================
-// AUTHENTIFICATION (Djoser uniquement)
+// AUTHENTICATION (Djoser / JWT)
 // ==============================
+export const register = (data) =>
+  API.post("/api/auth/users/", data); // Djoser endpoint standard
 
+export const login = (data) =>
+  API.post("/api/auth/jwt/create/", data); // renvoie access + refresh
 
-export const register = (data) => API.post("/api/auth/users/", {
-  email: data.email,
-  username: data.username,
-  password: data.password,
-});
-
-/**
- * Connexion - Djoser JWT
- * @param {Object} data - { email, password }
- * @returns {Promise} { access, refresh }
- */
-export const login = (data) => API.post("/api/auth/jwt/create/", data);
-
-/**
- * Récupérer le profil - Djoser
- */
-export const getProfile = () => API.get("/api/auth/users/me/");
-
-
-export const updateProfile = (data) => API.patch("/api/auth/users/me/", data);
-
-/**
- * Déconnexion - Custom endpoint
- */
 export const logout = () => {
   const refresh = localStorage.getItem("refresh_token");
-  return API.post("/api/accounts/logout/", { refresh });
+  return API.post("/api/auth/jwt/logout/", { refresh }); // endpoint Djoser logout
 };
 
-// ==============================
-// PROFILE IMAGE (Custom endpoint)
-// ==============================
+export const getProfile = () => API.get("/api/auth/users/me/"); // récupère info user
 
+export const forgotPassword = (data) =>
+  API.post("/api/auth/users/reset_password/", data); // Djoser reset password
 
+export const resetPassword = (data) =>
+  API.post("/api/auth/users/reset_password_confirm/", data); // confirm reset
+
+// ==============================
+// PROFILE
+// ==============================
 export const updateProfileImage = (formData) =>
-  API.post("/api/accounts/profile/image/", formData, {
+  API.put("/api/auth/users/me/", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
 // ==============================
-// HOTELS (Vos endpoints custom)
+// HOTELS
 // ==============================
-
 export const getHotels = () => API.get("/api/hotels/");
-
-export const createHotel = (formData) => API.post("/api/hotels/create/", formData, {
-  headers: { "Content-Type": "multipart/form-data" }
-});
+export const createHotel = (formData) =>
+  API.post("/api/hotels/create/", formData);
 
 export const updateHotel = (id, formData) =>
-  API.put(`/api/hotels/${id}/update/`, formData, { 
-    headers: { "Content-Type": "multipart/form-data" } 
+  API.put(`/api/hotels/${id}/update/`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
   });
 
 export const deleteHotel = (id) => API.delete(`/api/hotels/${id}/delete/`);
-
-export const getHotel = (id) => API.get(`/api/hotels/${id}/`);
 
 export default API;
