@@ -176,7 +176,7 @@ const Register = () => {
       await register(formData);
 
       alert(
-        "Inscription réussie 🎉\nVeuillez vérifier votre email pour activer votre compte."
+        "Inscription réussie \nVeuillez vérifier votre email pour activer votre compte."
       );
 
       navigate("/");
