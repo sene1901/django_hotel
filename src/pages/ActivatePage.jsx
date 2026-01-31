@@ -7,7 +7,7 @@ const ActivatePage = () => {
   const [message, setMessage] = useState("Activation en cours...");
 
   useEffect(() => {
-    axios.post("https://django-gestion-hotel-1.onrender.com/auth/users/activation/", {
+    axios.post("https://django-gestion-hotel-1.onrender.com/api/auth/users/activation/", {
       uid,
       token,
     })
