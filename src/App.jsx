@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import HotelList from "./pages/HotelList";
 import Register from "./pages/Register";
-import ActivatePage from "./pages/ActivatePage";
+import Activate from "./pages/Activate";
 
 import MotDePasseOublie from "./pages/MotDePasseOublie";
 import Layout from "./components/Layout"; 
@@ -18,11 +18,9 @@ function App() {
       {/* Pages publiques */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-       <Route path="/activate/:uid/:token" element={<ActivatePage />} />
+     <Route path="/activate/:uid/:token" element={<Activate />} />
       <Route path="/forgot-password" element={<MotDePasseOublie />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-
-      {/* Redirection root */}
+ <Route path="/password/reset/confirm/:uid/:token" element={<ResetPassword />} />  
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
       {/* Pages privées */}
