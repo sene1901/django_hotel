@@ -11,7 +11,7 @@ const Activate = () => {
     const activateAccount = async () => {
       try {
         await axios.post(
-          "https://django-gestion-hotel.onrender.com:8000/api/auth/users/activation/",
+          "https://django-gestion-hotel.onrender.com/api/auth/users/activation/",
           { uid, token }
         );
 
